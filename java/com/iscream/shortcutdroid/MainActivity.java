@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     {
         buttons.clear();
         buttonLL.removeAllViews();
-        String[] commands = line.split(",");
+        String[] commands = line.split("(sprtr)");
 
         //from 1 because 0th is "setup"
         for(int i=1;i<commands.length;i+=2) //label,command,label,command...
