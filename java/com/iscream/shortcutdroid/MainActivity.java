@@ -101,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     output = new PrintWriter(out);
 
                     Log.d("LOG", "Sending setup request to PC");
-                    output.print("setup");
-                    output.flush();
+                    printOut("setup");
                     //output.close();
                     Log.d("LOG", "Setup request sent to PC");
                     //socket.close();
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     inputStream=socket.getInputStream();
                     in = new BufferedReader(new InputStreamReader(inputStream));
                     Log.d("LOG", "reader created");
-                    line = in.readLine();
+                    line = readLine();
                     Log.d("LOG", "line read");
 
                     Log.d("RECV", line);
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             buttons.clear();
             buttonLL.removeAllViews();
             appNameTV.setText(commands[1]);
-            if(appsSpinner.getAdapter()!=null) appsSpinner.setSelection(0);
+            if(appsSpinner.getAdapter()!=null&&!commands[1].equals(appsSpinner.getSelectedItem().toString())) appsSpinner.setSelection(0);
 
             //from 2 because 0th is "setup", 1st is app name
             for(int i=2;i<commands.length;i+=2) //label,command,label,command...
@@ -186,8 +185,7 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("spinner", ""+position);
                                 if(position!=0)
                                 {
-                                    output.print("selected<sprtr>"+(position-1));
-                                    output.flush();
+                                    printOut("selected<sprtr>"+(position-1));
                                 }
                             }
                             catch(Exception e)
@@ -234,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                     while(inputStream.available()==0){
                         Thread.sleep(100);
                     }
-                    line = in.readLine();
+                    line = readLine();
                     Log.d("LOG", "line read");
 
                     Log.d("RECV", line);
@@ -261,5 +259,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void printOut(String toPrint)
+    {
+        output.print(toPrint);
+        output.flush();
+    }
+
+    private String readLine()
+    {
+        try
+        {
+            return in.readLine();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

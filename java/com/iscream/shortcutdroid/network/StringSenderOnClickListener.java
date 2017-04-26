@@ -40,8 +40,7 @@ public class StringSenderOnClickListener implements View.OnClickListener {
                                 //PrintWriter output = new PrintWriter(out);
 
                                 Log.d("LOG", "Sending Data to PC");
-                                output.print(toSend);
-                                output.flush();
+                                printOut(toSend);
                                 //output.close();
                                 Log.d("LOG", "Data sent to PC");
                                 //socket.close();
@@ -60,4 +59,10 @@ public class StringSenderOnClickListener implements View.OnClickListener {
                     e.printStackTrace();
                 }
             }
+
+    private void printOut(String toPrint)
+    {
+        output.print(toPrint);
+        output.flush();
+    }
 }
