@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     PrintWriter output;
     BufferedReader in;
     Button connectBtn;
+    TextView appNameTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         ipET=(EditText)findViewById(R.id.ipET);
         Button camBtn=(Button)findViewById(R.id.camBtn);
         connectBtn=(Button)findViewById(R.id.connectBtn);
+        appNameTV=(TextView)findViewById(R.id.AppNameTV);
         final Intent camIntent=new Intent(getApplicationContext(), ReaderActivity.class);
         camBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         buttons.clear();
         buttonLL.removeAllViews();
         String[] commands = line.split("<sprtr>");
+        appNameTV.setText(commands[1]);
 
         //from 2 because 0th is "setup", 1st is app name
         for(int i=2;i<commands.length;i+=2) //label,command,label,command...
