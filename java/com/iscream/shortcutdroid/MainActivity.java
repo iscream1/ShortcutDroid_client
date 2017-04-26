@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     continueListening();
                 }
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void ProcessSetup(String line)
@@ -137,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
         buttonLL.removeAllViews();
         String[] commands = line.split("<sprtr>");
 
-        //from 1 because 0th is "setup"
-        for(int i=1;i<commands.length;i+=2) //label,command,label,command...
+        //from 2 because 0th is "setup", 1st is app name
+        for(int i=2;i<commands.length;i+=2) //label,command,label,command...
         {
             Button btn = new Button(this);
             btn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -207,6 +207,6 @@ public class MainActivity extends AppCompatActivity {
                     continueListening();
                 }
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

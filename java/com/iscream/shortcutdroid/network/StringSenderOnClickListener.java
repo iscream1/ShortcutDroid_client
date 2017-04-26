@@ -53,7 +53,7 @@ public class StringSenderOnClickListener implements View.OnClickListener {
                             }
                             return null;
                         }
-                    }.execute();
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
                 catch (Exception e)
                 {
