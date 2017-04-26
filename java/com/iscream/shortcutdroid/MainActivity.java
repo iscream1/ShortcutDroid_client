@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //socket = new Socket(ipAddress, 115);
                     inputStream=socket.getInputStream();
-                    in = new BufferedReader(new InputStreamReader(inputStream));
+                    in = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
                     Log.d("LOG", "reader created");
                     line = readLine();
                     Log.d("LOG", "line read");

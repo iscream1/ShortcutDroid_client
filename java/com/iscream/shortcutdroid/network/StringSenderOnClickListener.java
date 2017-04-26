@@ -40,7 +40,7 @@ public class StringSenderOnClickListener implements View.OnClickListener {
                                 //PrintWriter output = new PrintWriter(out);
 
                                 Log.d("LOG", "Sending Data to PC");
-                                printOut(toSend);
+                                printOut("keystroke<sprtr>"+toSend);
                                 //output.close();
                                 Log.d("LOG", "Data sent to PC");
                                 //socket.close();
