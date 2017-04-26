@@ -111,7 +111,8 @@ public class ReaderActivity extends AppCompatActivity {
         acceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setResult(123, getIntent().putExtra("code", codeRead));
+                String[] array=codeRead.split("\n");
+                setResult(123, getIntent().putExtra("code", array[0]));
                 finish();
             }
         });

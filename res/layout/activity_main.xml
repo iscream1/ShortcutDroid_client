@@ -18,6 +18,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
             android:id="@+id/ipET"
             android:text="95.168.42.206"/>
         <LinearLayout
