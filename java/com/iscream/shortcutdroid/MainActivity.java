@@ -139,23 +139,26 @@ public class MainActivity extends AppCompatActivity {
         buttons.clear();
         buttonLL.removeAllViews();
         String[] commands = line.split("<sprtr>");
-        appNameTV.setText(commands[1]);
-
-        //from 2 because 0th is "setup", 1st is app name
-        for(int i=2;i<commands.length;i+=2) //label,command,label,command...
+        if(commands[0].equals("setup"))
         {
-            Button btn = new Button(this);
-            btn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            btn.setText(commands[i]); //set label
-            btn.setOnClickListener(new StringSenderOnClickListener(commands[i+1], output)); //set command with socket
-            //btnTag.setId();
-            buttons.add(btn);
-            //buttonLL.addView(btn);
-        }
+            appNameTV.setText(commands[1]);
 
-        for(Button btn : buttons)
-        {
-            buttonLL.addView(btn);
+            //from 2 because 0th is "setup", 1st is app name
+            for(int i=2;i<commands.length;i+=2) //label,command,label,command...
+            {
+                Button btn = new Button(this);
+                btn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                btn.setText(commands[i]); //set label
+                btn.setOnClickListener(new StringSenderOnClickListener(commands[i+1], output)); //set command with socket
+                //btnTag.setId();
+                buttons.add(btn);
+                //buttonLL.addView(btn);
+            }
+
+            for(Button btn : buttons)
+            {
+                buttonLL.addView(btn);
+            }
         }
     }
 
