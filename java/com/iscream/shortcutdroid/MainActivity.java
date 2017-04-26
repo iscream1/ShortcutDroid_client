@@ -6,9 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +22,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.iscream.shortcutdroid.network.*;
 
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     BufferedReader in;
     Button connectBtn;
     TextView appNameTV;
+    Spinner appsSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         Button camBtn=(Button)findViewById(R.id.camBtn);
         connectBtn=(Button)findViewById(R.id.connectBtn);
         appNameTV=(TextView)findViewById(R.id.AppNameTV);
+        appsSpinner=(Spinner)findViewById(R.id.appsSpinner);
         final Intent camIntent=new Intent(getApplicationContext(), ReaderActivity.class);
         camBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,12 +142,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void ProcessSetup(String line)
     {
-        buttons.clear();
-        buttonLL.removeAllViews();
         String[] commands = line.split("<sprtr>");
         if(commands[0].equals("setup"))
         {
+            buttons.clear();
+            buttonLL.removeAllViews();
             appNameTV.setText(commands[1]);
+            if(appsSpinner.getAdapter()!=null) appsSpinner.setSelection(0);
 
             //from 2 because 0th is "setup", 1st is app name
             for(int i=2;i<commands.length;i+=2) //label,command,label,command...
@@ -159,6 +166,45 @@ public class MainActivity extends AppCompatActivity {
             {
                 buttonLL.addView(btn);
             }
+        }
+        else if(commands[0].equals("apps"))
+        {
+            commands[0]="(Select app)";
+            ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this,
+                    android.R.layout.simple_spinner_item, commands);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            appsSpinner.setAdapter(adapter);
+            appsSpinner.setVisibility(View.VISIBLE);
+
+            appsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, final View selectedItemView, final int position, long id) {
+                    new AsyncTask<Void, Void, Void>(){
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            try {
+                                Log.d("spinner", ""+position);
+                                if(position!=0)
+                                {
+                                    output.print("selected<sprtr>"+(position-1));
+                                    output.flush();
+                                }
+                            }
+                            catch(Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    // your code here
+                }
+
+            });
         }
     }
 
