@@ -15,13 +15,13 @@ import java.net.Socket;
 public class StringSenderOnClickListener implements View.OnClickListener {
             String toSend;
             //final Socket socket;
-            final OutputStream out;
+            final PrintWriter output;
 
-            public StringSenderOnClickListener(String toSend, OutputStream out) {
+            public StringSenderOnClickListener(String toSend, PrintWriter output) {
                 super();
                 this.toSend=toSend;
                 //this.socket=socket;
-                this.out=out;
+                this.output=output;
             }
 
             @Override
@@ -37,7 +37,7 @@ public class StringSenderOnClickListener implements View.OnClickListener {
                                 //socket = new Socket(ipAddress, 115);
 
                                 //OutputStream out = socket.getOutputStream();
-                                PrintWriter output = new PrintWriter(out);
+                                //PrintWriter output = new PrintWriter(out);
 
                                 Log.d("LOG", "Sending Data to PC");
                                 output.print(toSend);
@@ -60,4 +60,4 @@ public class StringSenderOnClickListener implements View.OnClickListener {
                     e.printStackTrace();
                 }
             }
-        }
+}

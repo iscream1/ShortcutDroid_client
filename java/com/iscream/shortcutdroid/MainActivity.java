@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             btn.setText(commands[i]); //set label
-            btn.setOnClickListener(new StringSenderOnClickListener(commands[i+1], out)); //set command with socket
+            btn.setOnClickListener(new StringSenderOnClickListener(commands[i+1], output)); //set command with socket
             //btnTag.setId();
             buttons.add(btn);
             //buttonLL.addView(btn);
