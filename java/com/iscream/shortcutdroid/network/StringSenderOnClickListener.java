@@ -14,41 +14,50 @@ import java.net.Socket;
 
 public class StringSenderOnClickListener implements View.OnClickListener {
             String toSend;
-            final Socket socket;
+            //final Socket socket;
+            final OutputStream out;
 
-            public StringSenderOnClickListener(String out, Socket socket) {
+            public StringSenderOnClickListener(String toSend, OutputStream out) {
                 super();
-                toSend=out;
-                this.socket=socket;
+                this.toSend=toSend;
+                //this.socket=socket;
+                this.out=out;
             }
 
             @Override
             public void onClick(View view) {
                 //final String ipAddress=((EditText)view.findViewById(R.id.ipET)).getText().toString();
-                new AsyncTask<Void, Void, Void>(){
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        try {
-                            //Socket socket;
-                            //socket = new Socket(ipAddress, 115);
+                try{
+                    new AsyncTask<Void, Void, Void>(){
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            try {
+                                Log.d("LOG", "Clicked"+ toSend);
+                                //Socket socket;
+                                //socket = new Socket(ipAddress, 115);
 
-                            OutputStream out = socket.getOutputStream();
-                            PrintWriter output = new PrintWriter(out);
+                                //OutputStream out = socket.getOutputStream();
+                                PrintWriter output = new PrintWriter(out);
 
-                            Log.d("LOG", "Sending Data to PC");
-                            output.print(toSend);
-                            output.flush();
-                            //output.close();
-                            Log.d("LOG", "Data sent to PC");
-                            //socket.close();
-                            //Log.d("LOG", "Socket closed");
+                                Log.d("LOG", "Sending Data to PC");
+                                output.print(toSend);
+                                output.flush();
+                                //output.close();
+                                Log.d("LOG", "Data sent to PC");
+                                //socket.close();
+                                //Log.d("LOG", "Socket closed");
+                            }
+                            catch(Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                            return null;
                         }
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-                }.execute();
+                    }.execute();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         }

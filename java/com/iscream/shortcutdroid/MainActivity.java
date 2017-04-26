@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -27,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout buttonLL;
     Socket socket;
     OutputStream out;
+    InputStream inputStream;
     PrintWriter output;
+    BufferedReader in;
     Button connectBtn;
 
     @Override
@@ -96,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
                     //socket.close();
 
                     //socket = new Socket(ipAddress, 115);
-                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    inputStream=socket.getInputStream();
+                    in = new BufferedReader(new InputStreamReader(inputStream));
                     Log.d("LOG", "reader created");
                     line = in.readLine();
                     Log.d("LOG", "line read");
@@ -118,7 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 //connectBtn.setEnabled(false);
                 super.onPostExecute(aVoid);
                 if(line==null) Toast.makeText(getApplicationContext(), "Connection timed out", Toast.LENGTH_SHORT).show();
-                else ProcessSetup(line);
+                else
+                {
+                    ProcessSetup(line);
+                    continueListening();
+                }
             }
         }.execute();
     }
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             btn.setText(commands[i]); //set label
-            btn.setOnClickListener(new StringSenderOnClickListener(commands[i+1], socket)); //set command with socket
+            btn.setOnClickListener(new StringSenderOnClickListener(commands[i+1], out)); //set command with socket
             //btnTag.setId();
             buttons.add(btn);
             //buttonLL.addView(btn);
@@ -145,7 +153,60 @@ public class MainActivity extends AppCompatActivity {
         {
             buttonLL.addView(btn);
         }
+    }
 
-        init();
+    private void continueListening()
+    {
+        final String ipAddress=ipET.getText().toString();
+        new AsyncTask<Void, Void, Void>(){
+            String line = null;
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    /*if(socket==null) socket = new Socket(ipAddress, 115);
+
+                    out = socket.getOutputStream();
+                    output = new PrintWriter(out);
+
+                    Log.d("LOG", "Sending setup request to PC");
+                    output.print("setup");
+                    output.flush();
+                    //output.close();
+                    Log.d("LOG", "Setup request sent to PC");
+                    //socket.close();
+
+                    //socket = new Socket(ipAddress, 115);
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    Log.d("LOG", "reader created");*/
+                    while(inputStream.available()==0){
+                        Thread.sleep(100);
+                    }
+                    line = in.readLine();
+                    Log.d("LOG", "line read");
+
+                    Log.d("RECV", line);
+
+                    //socket.close();
+                    //Log.d("LOG", "Socket closed");
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                //connectBtn.setEnabled(false);
+                super.onPostExecute(aVoid);
+                if(line==null) Toast.makeText(getApplicationContext(), "Connection timed out", Toast.LENGTH_SHORT).show();
+                else
+                {
+                    ProcessSetup(line);
+                    continueListening();
+                }
+            }
+        }.execute();
     }
 }
