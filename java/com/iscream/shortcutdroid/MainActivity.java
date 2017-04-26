@@ -74,14 +74,14 @@ public class MainActivity extends AppCompatActivity {
     public void init()
     {
         Log.d("DEBUG", "init");
-        /*try{
+        try{
             socket.close();
         }
         catch (Exception e)
         {
             //e.printStackTrace();
             Log.d("socket", "can't close socket, probably not initialized yet");
-        }*/
+        }
         if(buttons==null) buttons=new ArrayList<>();
         final String ipAddress=ipET.getText().toString();
         new AsyncTask<Void, Void, Void>(){
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
-                    if(socket==null) socket = new Socket(ipAddress, 115);
+                    if(socket==null||socket.isClosed()) socket = new Socket(ipAddress, 115);
 
                     out = socket.getOutputStream();
                     output = new PrintWriter(out);
