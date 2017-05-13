@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import com.iscream.shortcutdroid.network.*;
 
@@ -39,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     Button connectBtn;
     TextView appNameTV;
     Spinner appsSpinner;
+    AsyncTask<Void, Void, Void> task=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +86,19 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception e)
         {
             //e.printStackTrace();
-            Log.d("socket", "can't close socket, probably not initialized yet");
+            Log.d("init", "can't close socket, probably not initialized yet");
+        }
+        try
+        {
+            if(task!=null) task.cancel(true);
+        }
+        catch (Exception e)
+        {
+            Log.d("init", "can't terminate task, probably not initialized yet");
         }
         if(buttons==null) buttons=new ArrayList<>();
         final String ipAddress=ipET.getText().toString();
-        new AsyncTask<Void, Void, Void>(){
+        task=new AsyncTask<Void, Void, Void>(){
             String line = null;
             @Override
             protected Void doInBackground(Void... voids) {
@@ -198,10 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parentView) {
-                    // your code here
-                }
-
+                public void onNothingSelected(AdapterView<?> parentView) {}
             });
         }
     }
@@ -209,26 +214,11 @@ public class MainActivity extends AppCompatActivity {
     private void continueListening()
     {
         final String ipAddress=ipET.getText().toString();
-        new AsyncTask<Void, Void, Void>(){
+        task=new AsyncTask<Void, Void, Void>(){
             String line = null;
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
-                    /*if(socket==null) socket = new Socket(ipAddress, 115);
-
-                    out = socket.getOutputStream();
-                    output = new PrintWriter(out);
-
-                    Log.d("LOG", "Sending setup request to PC");
-                    output.print("setup");
-                    output.flush();
-                    //output.close();
-                    Log.d("LOG", "Setup request sent to PC");
-                    //socket.close();
-
-                    //socket = new Socket(ipAddress, 115);
-                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    Log.d("LOG", "reader created");*/
                     while(inputStream.available()==0){
                         Thread.sleep(100);
                     }
@@ -236,9 +226,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("LOG", "line read");
 
                     Log.d("RECV", line);
-
-                    //socket.close();
-                    //Log.d("LOG", "Socket closed");
                 }
                 catch(Exception e)
                 {
@@ -249,7 +236,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                //connectBtn.setEnabled(false);
                 super.onPostExecute(aVoid);
                 if(line==null) Toast.makeText(getApplicationContext(), "Connection timed out", Toast.LENGTH_SHORT).show();
                 else
