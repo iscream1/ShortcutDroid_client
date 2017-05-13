@@ -1,9 +1,14 @@
 package com.iscream.shortcutdroid;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
     Button connectBtn;
     TextView appNameTV;
     Spinner appsSpinner;
-    AsyncTask<Void, Void, Void> task=null;
+    AsyncTask<Void, Void, Void> task;
+    Button camBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,26 +52,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         buttonLL=(LinearLayout)findViewById(R.id.ButtonLL);
         ipET=(EditText)findViewById(R.id.ipET);
-        Button camBtn=(Button)findViewById(R.id.camBtn);
+        camBtn=(Button)findViewById(R.id.camBtn);
         connectBtn=(Button)findViewById(R.id.connectBtn);
         appNameTV=(TextView)findViewById(R.id.AppNameTV);
         appsSpinner=(Spinner)findViewById(R.id.appsSpinner);
-        final Intent camIntent=new Intent(getApplicationContext(), ReaderActivity.class);
-        camBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(camIntent, 123);
-            }
-        });
-
         connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 init();
             }
         });
-
-        //init();
+        camBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestNeededPermission();
+            }
+        });
     }
 
     @Override
@@ -264,5 +266,44 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static final int REQUEST_CODE_CAMERA_PERMISSION = 3541;
+    public void requestNeededPermission() {
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA))
+            {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        REQUEST_CODE_CAMERA_PERMISSION);
+            }
+            else ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CODE_CAMERA_PERMISSION);
+        } else
+        {
+            final Intent camIntent=new Intent(getApplicationContext(), ReaderActivity.class);
+            startActivityForResult(camIntent, 123);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[],int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_CAMERA_PERMISSION: {
+                if (grantResults.length > 0
+                        && grantResults[0] ==
+                        PackageManager.PERMISSION_GRANTED) {
+                    final Intent camIntent=new Intent(getApplicationContext(), ReaderActivity.class);
+                    startActivityForResult(camIntent, 123);
+                } else {
+                    Toast.makeText(this, "Can't get camera permission", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
     }
 }
